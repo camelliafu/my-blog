@@ -1,11 +1,20 @@
-import { posts } from "@/data/posts";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { posts } from "../../../data/posts";
 
-export default function HelloWorldPostPage() {
-  const post = posts.find((item) => item.slug === "hello-world");
+type PostDetailPageProps = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+export default async function PostDetailPage({ params }: PostDetailPageProps) {
+  const { slug } = await params;
+
+  const post = posts.find((item) => item.slug === slug);
 
   if (!post) {
-    return <div>文章不存在</div>;
+    notFound();
   }
 
   return (
