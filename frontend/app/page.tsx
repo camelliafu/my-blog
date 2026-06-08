@@ -1,65 +1,75 @@
-import Image from "next/image";
+import Link from "next/link";
+import { posts } from "@/data/posts";
 
-export default function Home() {
+export default function HomePage() {
+  const latestPosts = posts.slice(0, 2);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="space-y-12">
+      <section className="rounded-2xl bg-white p-10 shadow-sm">
+        <p className="mb-3 text-sm font-medium text-blue-600">
+          自建博客项目
+        </p >
+
+        <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900">
+          记录学习、项目和技术成长
+        </h1>
+
+        <p className="max-w-2xl text-lg leading-8 text-gray-600">
+          这是一个基于 Next.js、NestJS 和 MySQL 构建的现代化个人博客系统。
+          当前项目处于前端基础页面开发阶段。
+        </p >
+
+        <div className="mt-8 flex gap-4">
+          <Link
+            href="/posts"
+            className="rounded-lg bg-gray-900 px-5 py-3 text-sm font-medium text-white hover:bg-gray-700"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            查看文章
+          </Link>
+
+          <Link
+            href="/about"
+            className="rounded-lg border border-gray-300 px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100"
           >
-            Documentation
-          </a>
+            关于我
+          </Link>
         </div>
-      </main>
+      </section>
+
+      <section>
+        <div className="mb-6 flex items-end justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">最新文章</h2>
+            <p className="mt-2 text-gray-600">记录最近的项目进展和学习内容。</p >
+          </div>
+
+          <Link href="/posts" className="text-sm text-blue-600 hover:underline">
+            查看全部
+          </Link>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {latestPosts.map((post) => (
+            <article key={post.id} className="rounded-xl bg-white p-6 shadow-sm">
+              <p className="mb-2 text-sm text-gray-500">{post.date}</p >
+
+              <h3 className="mb-3 text-xl font-semibold text-gray-900">
+                {post.title}
+              </h3>
+
+              <p className="mb-4 text-gray-600">{post.description}</p >
+
+              <Link
+                href={`/posts/${post.slug}`}
+                className="text-sm font-medium text-blue-600 hover:underline"
+              >
+                阅读全文
+              </Link>
+            </article>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
