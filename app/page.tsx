@@ -39,7 +39,7 @@ export default async function Home() {
                 </p>
 
                 <p style={{ fontSize: 14, color: "#888", marginBottom: 12 }}>
-                  {post.date}
+                  {new Date(post.date).toISOString().slice(0, 10)}
                 </p>
 
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

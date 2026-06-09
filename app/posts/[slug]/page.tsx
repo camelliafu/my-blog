@@ -33,7 +33,9 @@ export default async function PostDetailPage({ params }: PageProps) {
           {post.description}
         </p>
 
-        <p style={{ color: "#888", marginBottom: 20 }}>{post.date}</p>
+        <p style={{ color: "#888", marginBottom: 20 }}>
+          {new Date(post.date).toISOString().slice(0, 10)}
+        </p>
 
         <div
           style={{
