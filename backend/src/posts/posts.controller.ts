@@ -6,12 +6,12 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.postsService.findAll();
   }
 
   @Get(':slug')
-  findOne(@Param('slug') slug: string) {
-    return this.postsService.findOneBySlug(slug);
+  async findOne(@Param('slug') slug: string) {
+    return this.postsService.findOne(slug);
   }
 }
