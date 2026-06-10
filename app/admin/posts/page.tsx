@@ -1,5 +1,20 @@
 "use client";
 
+function getAdminToken() {
+  if (typeof document === "undefined") {
+    return "";
+  }
+
+  const match = document.cookie.match(/(?:^|; )admin_token=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : "";
+}
+
+function handleUnauthorized() {
+  alert("登录已过期，请重新登录");
+  document.cookie = "admin_token=; path=/; max-age=0";
+  window.location.href = "/admin/login";
+}
+
 import { useEffect, useState } from "react";
 
 type Post = {
@@ -85,21 +100,47 @@ export default function AdminPostsPage() {
     };
 
     if (editingId) {
-      await fetch(`${API_BASE_URL}/posts/${editingId}`, {
+      const token = getAdminToken();
+
+      const res = await fetch(`${API_BASE_URL}/posts/${editingId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
+
+      if (res.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      if (!res.ok) {
+        alert("编辑失败");
+        return;
+      }
     } else {
-      await fetch(`${API_BASE_URL}/posts`, {
+      const token = getAdminToken();
+
+      const res = await fetch(`${API_BASE_URL}/posts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
+
+      if (res.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      if (!res.ok) {
+        alert("新增失败");
+        return;
+      }
     }
 
     setEditingId(null);
@@ -141,9 +182,24 @@ export default function AdminPostsPage() {
       return;
     }
 
-    await fetch(`${API_BASE_URL}/posts/${id}`, {
+    const token = getAdminToken();
+
+    const res = await fetch(`${API_BASE_URL}/posts/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
+
+    if (res.status === 401) {
+      handleUnauthorized();
+      return;
+    }
+
+    if (!res.ok) {
+      alert("删除失败");
+      return;
+    }
 
     await loadPosts();
   }
@@ -163,7 +219,33 @@ export default function AdminPostsPage() {
 
   return (
     <main style={{ maxWidth: 1000, margin: "0 auto", padding: "48px 24px" }}>
-      <h1 style={{ fontSize: 36, marginBottom: 24 }}>后台文章管理</h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 24,
+        }}
+      >
+        <h1 style={{ fontSize: 36, margin: 0 }}>后台文章管理</h1>
+
+        <button
+          type="button"
+          onClick={() => {
+            document.cookie = "admin_token=; path=/; max-age=0";
+            window.location.href = "/admin/login";
+          }}
+          style={{
+            padding: "8px 14px",
+            border: "1px solid #ddd",
+            borderRadius: 8,
+            background: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          退出登录
+        </button>
+      </div>
 
       {error && <p style={{ color: "#dc2626", marginBottom: 20 }}>{error}</p>}
 

@@ -34,10 +34,10 @@ export class PostsService {
       data: {
         slug: createPostDto.slug,
         title: createPostDto.title,
-        description: createPostDto.description,
-        date: new Date(createPostDto.date),
-        tags: createPostDto.tags,
-        content: createPostDto.content,
+        description: createPostDto.description ?? '',
+        date: createPostDto.date ? new Date(createPostDto.date) : new Date(),
+        tags: createPostDto.tags ?? [],
+        content: createPostDto.content ?? '',
       },
     });
   }
